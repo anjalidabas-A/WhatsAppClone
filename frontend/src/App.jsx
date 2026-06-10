@@ -1,7 +1,8 @@
-// import logo from './logo.svg';
 import React from "react";
+import {Routes, Route} from "react-router-dom"
 import { useState } from "react";
 import './App.css';
+import Settings from "./pages/Settings"
 
 import SideBar from "./components/SideBar";
 import ChatHeader from "./components/ChatHeader";
@@ -14,9 +15,11 @@ function App(){
   const [selectedChat , setSelectedChat] = useState("");
 
   return(
-    <div className="app">
+    <Routes>
+      <Route path="/" element={
+      <div className="app">
 
-      <SideBar setSelectedChat={setSelectedChat}/>
+        <SideBar setSelectedChat={setSelectedChat}/>
 
       <div className="chat-section">
 
@@ -28,7 +31,11 @@ function App(){
 
         <MessageInput/>
       </div>
-    </div>
+      </div>
+    }/>
+
+    <Route path="/settings" element={<Settings/>}/>
+    </Routes>
   );
 }
 

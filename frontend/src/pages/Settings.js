@@ -22,7 +22,7 @@ function Settings(){
       <div className="setting-item">Chats</div>
       <div className="setting-item">Appearance</div>
       <div className="setting-item">Help</div>
-      <div className="setting-item">Logout</div>
+      <div className="setting-item  logout">Logout</div>
 
     </div>
   );
