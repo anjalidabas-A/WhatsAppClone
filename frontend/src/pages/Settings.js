@@ -1,10 +1,12 @@
 import './Settings.css'
+import { Link } from "react-router-dom";
 
 function Settings(){
   return(
     <div className="settings">
-      <div className="settings-header">
-        <h2>Settings</h2>
+      <div className="settings-header">      
+        <h1>Settings</h1>
+        <Link to="/" className='back-btn'>Back</Link>
       </div>
 
       <div className="profile-section">

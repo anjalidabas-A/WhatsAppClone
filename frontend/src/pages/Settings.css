@@ -6,8 +6,17 @@
 }
 
 .settings-header {
+  display: grid;
+  grid-template-columns: 4fr 1fr;
+  align-items: center;
   background: #202c33;
   padding: 20px;
+}
+
+.back-btn {
+  text-decoration: none;
+  color: white;
+  font-size: 25px;
 }
 
 .profile-section {
