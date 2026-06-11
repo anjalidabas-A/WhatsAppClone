@@ -1,10 +1,7 @@
-
-function ChatItem({name , onClick}){
-  return(
+function ChatItem({ name, onClick }) {
+  return (
     <div className="chat-item" onClick={onClick}>
-      <div className="profile-img">
-        {name[0]}
-      </div>
+      <div className="profile-img">{name[0]}</div>
 
       <div>
         <h4>{name}</h4>

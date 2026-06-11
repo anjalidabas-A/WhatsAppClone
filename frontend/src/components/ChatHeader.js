@@ -1,8 +1,5 @@
-
-
-function ChatHeader({selectedChat}){
-
-  return(
+function ChatHeader({ selectedChat }) {
+  return (
     <div className="chat-header">
       <div className="header-left">
         <div className="profile-img">{selectedChat[0]}</div>
