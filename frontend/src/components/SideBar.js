@@ -21,7 +21,6 @@ function SideBar({ setSelectedChat }) {
     <div className="sidebar">
       <div className="profile-header">
         <div className="app-name">VibeChat</div>
-        {/* <div className="setting-icon">Setting</div> */}
         <Link to="/settings">
           <img src={settingIcon} alt="settings" className="setting-icon" />
         </Link>
