@@ -1,20 +1,20 @@
-import "./Settings.css";
+import style from "./Settings.module.css";
 import { Link } from "react-router-dom";
 import { useState } from "react";
 
 function Settings() {
   const [showLogout, setShowLogout] = useState(false);
   return (
-    <div className="settings">
-      <div className="settings-header">
+    <div className={style.settings}>
+      <div className={style.settingsHeader}>
         <h1>Settings</h1>
-        <Link to="/" className="back-btn">
+        <Link to="/" className={style.backBtn}>
           Back
         </Link>
       </div>
 
-      <div className="profile-section">
-        <div className="profile-img">A</div>
+      <div className={style.profileSection}>
+        <div className={style.profileImg}>A</div>
 
         <div>
           <h3>Anjali Dabas</h3>
@@ -22,28 +22,31 @@ function Settings() {
         </div>
       </div>
 
-      <div className="setting-item">Account</div>
-      <div className="setting-item">Privacy</div>
-      <div className="setting-item">Notification</div>
-      <div className="setting-item">Chats</div>
-      <div className="setting-item">Appearance</div>
-      <div className="setting-item">Help</div>
-      <div className="setting-item  logout" onClick={() => setShowLogout(true)}>
+      <div className={style.settingItem}>Account</div>
+      <div className={style.settingItem}>Privacy</div>
+      <div className={style.settingItem}>Notification</div>
+      <div className={style.settingItem}>Chats</div>
+      <div className={style.settingItem}>Appearance</div>
+      <div className={style.settingItem}>Help</div>
+      <div className={style.settingItem} onClick={() => setShowLogout(true)}>
         Logout
       </div>
 
       {showLogout && (
-        <div className="logout-card">
-          <div className="logout-details">
+        <div className={style.logoutCard}>
+          <div className={style.logoutDetails}>
             <h1>VibeChat</h1>
             <p>Are you sure you want to Logout?</p>
             <button
-              className="cancel-button"
+              className={style.cancelButton}
               onClick={() => setShowLogout(false)}
             >
               Cancel
             </button>
-            <button className="logout-button">Logout</button>
+            <Link to="/signin" className={style.logoutButton}>
+            Logout
+            </Link>
+
           </div>
         </div>
       )}
