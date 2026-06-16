@@ -1,9 +1,10 @@
 import style from "./Settings.module.css";
-import { Link } from "react-router-dom";
+import { Link , useNavigate } from "react-router-dom";
 import { useState } from "react";
 
 function Settings() {
   const [showLogout, setShowLogout] = useState(false);
+  const navigate = useNavigate();
   return (
     <div className={style.settings}>
       <div className={style.settingsHeader}>
@@ -28,7 +29,7 @@ function Settings() {
       <div className={style.settingItem}>Chats</div>
       <div className={style.settingItem}>Appearance</div>
       <div className={style.settingItem}>Help</div>
-      <div className={style.settingItem} onClick={() => setShowLogout(true)}>
+      <div className={`${style.settingItem} ${style.logout}`} onClick={() => setShowLogout(true)}>
         Logout
       </div>
 
@@ -43,9 +44,9 @@ function Settings() {
             >
               Cancel
             </button>
-            <Link to="/signin" className={style.logoutButton}>
+            <button className={style.logoutButton} onClick={() => {navigate("/signin")}}>
             Logout
-            </Link>
+            </button>
 
           </div>
         </div>

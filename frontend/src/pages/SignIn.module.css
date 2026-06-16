@@ -7,13 +7,12 @@
 }
 
 .signInCard {
-  color: antiquewhite;
   width: 500px;
   height: 400px;
   background-color: darkgray;
   padding: 2rem;
   display: grid;
-  grid-template-rows: 1fr 2fr 1fr 1fr;
+  grid-template-rows: 1fr 2fr 0.5fr 1fr 1fr;
   gap: 20px;
 }
 
@@ -23,6 +22,10 @@
 
 .signInCard p {
   color: black;
+}
+
+.signInCard p:nth-of-type(2){
+  color: red;
 }
 
 .signInInput {

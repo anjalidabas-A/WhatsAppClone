@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import styles from "./SignIn.module.css";
 import { useState } from "react";
 
@@ -6,11 +7,17 @@ function SignIn() {
 
   const [number, setNumber] = useState("");
 
+  const [error, setError] = useState("");
+
+  const navigate = useNavigate();
+
   const checkNum = () => {
     if (mobileData.includes(number)) {
-      console.log("valid user");
+      navigate("/");
     } else {
-      console.log("invalid user");
+      // alert("Invalid User");
+      setError("Invalid Mobile Number");
+      setNumber("");
     }
   };
 
@@ -20,12 +27,14 @@ function SignIn() {
         <h1>Welcome to VibeChat</h1>
         <p>Sign in to Open the App</p>
 
+        <p>{error}</p>
+
         <input
-          type="text"
+          type="tel"
           placeholder="Enter Your Mobile Number"
           className={styles.signInInput}
           value={number}
-          onChange={(e) => setNumber(e.target.value)}
+          onChange={(e) => {setNumber(e.target.value); setError("");}}
         />
 
         <button className={styles.signInBtn} onClick={checkNum}>
