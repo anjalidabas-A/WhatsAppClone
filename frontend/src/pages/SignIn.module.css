@@ -1,0 +1,38 @@
+.signInContainer {
+  height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  background: rgb(1 4 5 / 85%);
+}
+
+.signInCard {
+  width: 500px;
+  height: 400px;
+  background-color: darkgray;
+  padding: 2rem;
+  display: grid;
+  grid-template-rows: 1fr 2fr 0.5fr 1fr 1fr;
+  gap: 20px;
+}
+
+.signInCard h1 {
+  color: black;
+}
+
+.signInCard p {
+  color: black;
+}
+
+.signInCard p:nth-of-type(2){
+  color: red;
+}
+
+.signInInput {
+  padding-left: 10px;
+}
+
+.signInBtn {
+  background-color: rgb(1 4 5 / 85%);
+  color: white;
+}

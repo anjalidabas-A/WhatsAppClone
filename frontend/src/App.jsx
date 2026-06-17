@@ -8,6 +8,7 @@ import SideBar from "./components/SideBar";
 import ChatHeader from "./components/ChatHeader";
 import Message from "./components/Message";
 import MessageInput from "./components/MessageInput";
+import SignIn from "./pages/SignIn";
 
 function App() {
   const messages = [
@@ -41,10 +42,9 @@ function App() {
       />
 
       <Route path="/settings" element={<Settings />} />
+      <Route path="/signin" element={<SignIn />}/>
     </Routes>
   );
 }
 
 export default App;
-
-// fgkjfnggfjhnfgk
