@@ -9,12 +9,13 @@ import ChatHeader from "./components/ChatHeader";
 import Message from "./components/Message";
 import MessageInput from "./components/MessageInput";
 import SignIn from "./pages/SignIn";
+import Help from "./pages/Help";
 
 function App() {
-  const messages = [
+  const [messages, setMessages] = useState([
     { text: "Hello", type: "received" },
     { text: "hey, how r u?", type: "sent" },
-  ];
+  ]);
 
   const [selectedChat, setSelectedChat] = useState("");
 
@@ -35,13 +36,14 @@ function App() {
                 ))}
               </div>
 
-              <MessageInput />
+              <MessageInput messages={messages} setMessages={setMessages}/>
             </div>
           </div>
         }
       />
 
       <Route path="/settings" element={<Settings />} />
+      <Route path="help" element={<Help />} />
       <Route path="/signin" element={<SignIn />}/>
     </Routes>
   );
