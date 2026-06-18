@@ -29,7 +29,7 @@ function Settings() {
       <div className={style.settingItem}>Chats</div>
       <div className={style.settingItem}>Appearance</div>
 
-      <Link to="/help" className={style.settingItem}>Help</Link>
+      <div className={style.settingItem} onClick={() => {navigate("/help")}}>Help</div>
 
       <div className={`${style.settingItem} ${style.logout}`} onClick={() => setShowLogout(true)}>
         Logout

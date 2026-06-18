@@ -43,7 +43,7 @@ function App() {
       />
 
       <Route path="/settings" element={<Settings />} />
-      <Route path="help" element={<Help />} />
+      <Route path="/help" element={<Help />} />
       <Route path="/signin" element={<SignIn />}/>
     </Routes>
   );
