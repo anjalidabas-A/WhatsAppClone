@@ -3,19 +3,28 @@ import styles from "./SignIn.module.css";
 import { useState } from "react";
 
 function SignIn() {
-  const mobileData = ["9876", "1234"];
-
   const [number, setNumber] = useState("");
 
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
 
-  const checkNum = () => {
-    if (mobileData.includes(number)) {
+  const checkNum = async () => {
+    const response = await fetch(" http://127.0.0.1:8000/signin", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        number: number,
+      }),
+    });
+
+    const data = await response.json();
+
+    if (data.successful) {
       navigate("/");
     } else {
-      // alert("Invalid User");
       setError("Invalid Mobile Number");
       setNumber("");
     }
@@ -27,14 +36,17 @@ function SignIn() {
         <h1>Welcome to VibeChat</h1>
         <p>Sign in to Open the App</p>
 
-        <p>{error}</p>
+        {error && <p className={styles.error}>{error}</p>}
 
         <input
           type="tel"
           placeholder="Enter Your Mobile Number"
           className={styles.signInInput}
           value={number}
-          onChange={(e) => {setNumber(e.target.value); setError("");}}
+          onChange={(e) => {
+            setNumber(e.target.value);
+            setError("");
+          }}
         />
 
         <button className={styles.signInBtn} onClick={checkNum}>

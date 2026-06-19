@@ -12,19 +12,19 @@
   background-color: darkgray;
   padding: 2rem;
   display: grid;
-  grid-template-rows: 1fr 2fr 0.5fr 1fr 1fr;
+  grid-template-rows: 1fr 2fr 1fr 1fr;
   gap: 20px;
 }
 
-.signInCard h1 {
+/* .signInCard h1 {
   color: black;
-}
+} */
 
-.signInCard p {
+/* .signInCard p {
   color: black;
-}
+} */
 
-.signInCard p:nth-of-type(2){
+.error{
   color: red;
 }
 

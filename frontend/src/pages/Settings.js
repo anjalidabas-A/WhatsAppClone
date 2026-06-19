@@ -28,7 +28,9 @@ function Settings() {
       <div className={style.settingItem}>Notification</div>
       <div className={style.settingItem}>Chats</div>
       <div className={style.settingItem}>Appearance</div>
-      <div className={style.settingItem}>Help</div>
+
+      <div className={style.settingItem} onClick={() => {navigate("/help")}}>Help</div>
+
       <div className={`${style.settingItem} ${style.logout}`} onClick={() => setShowLogout(true)}>
         Logout
       </div>
