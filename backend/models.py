@@ -14,3 +14,9 @@ class Message(Base):
   chat_name = Column(String, index=True)
   text = Column(String)
   message_type = Column(String)
+
+class Contact(Base):
+  __tablename__ = "contacts"
+
+  id = Column(Integer, primary_key=True, index=True)
+  name = Column(String, unique=True, index=True)

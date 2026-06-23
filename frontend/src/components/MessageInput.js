@@ -27,7 +27,13 @@ function MessageInput({ selectedChat, messages, setMessages }) {
       const data = await response.json();
 
       if (data.successful) {
-        setMessages((prev) => [...prev, { id: Date.now(), chat_name: selectedChat, text: input, message_type: "sent", },]);
+        const updatedResponse = await fetch(`http://127.0.0.1:8000/messages/${selectedChat}`);
+
+        const updatedData = await updatedResponse.json();
+
+        if (updatedData.successful){
+          setMessages(updatedData.messages);
+        }
         setInput("");
       }
     } catch (error) {

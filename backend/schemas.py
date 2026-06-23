@@ -7,3 +7,7 @@ class MessageCreate(BaseModel):
   chat_name: str
   text: str
   message_type: str
+
+class ContactCreate(BaseModel):
+  name: str
+

@@ -63,6 +63,16 @@ def save_message(message: MessageCreate):
 
   db.add(new_message)
   db.commit()
+
+  received_message = Message(
+    chat_name=message.chat_name,
+    text="OKAY",
+    message_type="received",
+  )
+
+  db.add(received_message)
+  db.commit()
+  
   db.close()
 
   return{

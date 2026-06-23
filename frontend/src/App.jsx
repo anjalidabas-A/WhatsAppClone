@@ -56,7 +56,7 @@ function App() {
                 ))}
               </div>
 
-              <MessageInput selectedChat={selectedChat} messages={messages} setMessages={setMessages} />
+              <MessageInput selectedChat={selectedChat} setMessages={setMessages} />
             </div>
           </div>
         }
