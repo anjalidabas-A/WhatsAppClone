@@ -1,8 +1,8 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from database import engine, SessionLocal
-from models import Base, User, Message
-from schemas import UserLogin, MessageCreate
+from models import Base, User, Message, Contact
+from schemas import UserLogin, MessageCreate, ContactCreate
 
 app = FastAPI()
 
@@ -102,3 +102,48 @@ def get_messages(chat_name: str):
     "successful": True,
     "messages": result
   }
+
+@app.get("/contacts")
+def get_contacts():
+  db = SessionLocal()
+
+  contacts = db.query(Contact).all()
+
+  result = []
+  for contact in contacts:
+    result.append({
+      "id": contact.id,
+      "name": contact.name
+    })
+  db.close()
+  return result
+
+@app.post("/contacts")
+def add_contact(contact: ContactCreate):
+  db = SessionLocal()
+
+  already_contact = db.query(Contact).filter(Contact.name == contact.name).first()
+
+  if already_contact:
+    db.close()
+    return{
+      "successful": False,
+      "message": "Contact already exists"
+    }
+
+  new_contact = Contact(name=contact.name)
+
+  db.add(new_contact)
+  db.commit()
+  db.refresh(new_contact)
+
+  result = {
+    "successful": True,
+    "message": "Contact added successfully",
+    "contact":{
+      "id": new_contact.id,
+      "name": new_contact.name,
+    }
+  }
+  db.close()
+  return result

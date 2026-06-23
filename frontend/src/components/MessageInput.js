@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function MessageInput({ selectedChat, messages, setMessages }) {
+function MessageInput({ selectedChat, setMessages }) {
   const [input, setInput] = useState("");
 
   const sendMessage = async () => {
@@ -33,8 +33,9 @@ function MessageInput({ selectedChat, messages, setMessages }) {
 
         if (updatedData.successful){
           setMessages(updatedData.messages);
+          setInput("");
         }
-        setInput("");
+        
       }
     } catch (error) {
       console.log("Error", error);
