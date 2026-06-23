@@ -15,11 +15,15 @@ function SideBar({ setSelectedChat }) {
   }, []);
 
   const fetchContacts = async () => {
-    const response = await fetch("http://127.0.0.1:8000/contacts");
-    const data = await response.json();
+    try{
+      const response = await fetch("http://127.0.0.1:8000/contacts");
+      const data = await response.json();
 
-    const contactNames = data.map((contact) => contact.name);
-    setChats(contactNames);
+      const contactNames = data.map((contact) => contact.name);
+      setChats(contactNames);
+    } catch(error) {
+      console.log("Error fetching contacts:", error);
+    }
   };
 
   const handleSearchChange = (e) => {

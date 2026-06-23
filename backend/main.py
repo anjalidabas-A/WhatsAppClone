@@ -1,6 +1,7 @@
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
-from database import engine, SessionLocal
+from sqlalchemy.orm import Session
+from database import engine, get_db, SessionLocal
 from models import Base, User, Message, Contact
 from schemas import UserLogin, MessageCreate, ContactCreate
 
@@ -20,9 +21,12 @@ def add_users():
   db = SessionLocal()
 
   user1 = db.query(User).filter(User.number == "9876").first()
+  user2 = db.query(User).filter(User.number == "1234").first()
 
   if not user1:
     db.add(User(number="9876"))
+  if not user2:
+    db.add(User(number="1234"))
   
   db.commit()
   db.close()
@@ -34,12 +38,9 @@ def home():
   return {"message": "Backend is running"}
 
 @app.post("/signin")
-def signin(user: UserLogin):
-  db = SessionLocal()
+def signin(user: UserLogin, db: Session = Depends(get_db)):
 
   db_user = db.query(User).filter(User.number == user.number).first()
-
-  db.close()
 
   if db_user:
     return {
@@ -52,13 +53,12 @@ def signin(user: UserLogin):
   }
 
 @app.post("/message")
-def save_message(message: MessageCreate):
-  db = SessionLocal()
+def save_message(message: MessageCreate, db: Session = Depends(get_db)):
 
   new_message = Message(
     chat_name=message.chat_name,
     text=message.text,
-    message_type=message.message_type,
+    message_type="sent",
   )
 
   db.add(new_message)
@@ -72,8 +72,6 @@ def save_message(message: MessageCreate):
 
   db.add(received_message)
   db.commit()
-  
-  db.close()
 
   return{
     "successful": True,
@@ -81,12 +79,9 @@ def save_message(message: MessageCreate):
   }
 
 @app.get("/messages/{chat_name}")
-def get_messages(chat_name: str):
-  db = SessionLocal()
+def get_messages(chat_name: str, db: Session = Depends(get_db)):
 
   all_messages = db.query(Message).filter(Message.chat_name == chat_name).all()
-
-  db.close()
 
   result = []
 
@@ -104,8 +99,7 @@ def get_messages(chat_name: str):
   }
 
 @app.get("/contacts")
-def get_contacts():
-  db = SessionLocal()
+def get_contacts(db: Session = Depends(get_db)):
 
   contacts = db.query(Contact).all()
 
@@ -115,12 +109,10 @@ def get_contacts():
       "id": contact.id,
       "name": contact.name
     })
-  db.close()
   return result
 
 @app.post("/contacts")
-def add_contact(contact: ContactCreate):
-  db = SessionLocal()
+def add_contact(contact: ContactCreate, db: Session = Depends(get_db)):
 
   already_contact = db.query(Contact).filter(Contact.name == contact.name).first()
 
@@ -145,5 +137,4 @@ def add_contact(contact: ContactCreate):
       "name": new_contact.name,
     }
   }
-  db.close()
   return result
