@@ -139,3 +139,30 @@ body {
   color: white;
   border: none;
 }
+
+.add-contact-btn{
+  width: 90%;
+  height: 25px;
+  margin-left: 15px;
+  background-color: darkcyan;
+  margin-top: 10px;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.add-contact-box{
+  width: 90%;
+  margin: 10px auto 12px;
+  display: flex;
+  gap: 10px;
+}
+
+.add-contact-input{
+  flex: 1;
+  padding: 10px;
+}
+
+.save-contact-btn{
+  background-color: #00a884;
+}

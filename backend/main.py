@@ -1,6 +1,9 @@
-from fastapi import FastAPI
-from pydantic import BaseModel
+from fastapi import FastAPI, Depends
 from fastapi.middleware.cors import CORSMiddleware
+from sqlalchemy.orm import Session
+from database import engine, get_db, SessionLocal
+from models import Base, User, Message, Contact
+from schemas import UserLogin, MessageCreate, ContactCreate
 
 app = FastAPI()
 
@@ -12,12 +15,8 @@ app.add_middleware(
   allow_headers=["*"]
 )
 
-mobile_data = ["9876" , "1234"]
+Base.metadata.create_all(bind=engine)
 
-<<<<<<< Updated upstream
-class User(BaseModel):
-  number: str
-=======
 def add_users():
   db = SessionLocal()
   try:
@@ -38,11 +37,13 @@ add_users()
 @app.get("/")
 def home():
   return {"message": "Backend is running"}
->>>>>>> Stashed changes
 
 @app.post("/signin")
-def signin(user: User):
-  if user.number in mobile_data:
+def signin(user: UserLogin, db: Session = Depends(get_db)):
+
+  db_user = db.query(User).filter(User.number == user.number).first()
+
+  if db_user:
     return {
       "successful": True,
       "message": "Valid User"
@@ -50,9 +51,6 @@ def signin(user: User):
   return{
       "successful": False,
       "message": "InValid User"
-<<<<<<< Updated upstream
-  }
-=======
   }
 
 @app.post("/message")
@@ -140,4 +138,3 @@ def add_contact(contact: ContactCreate, db: Session = Depends(get_db)):
     }
   }
   return result
->>>>>>> Stashed changes
