@@ -1,21 +1,63 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import SearchBar from "./SearchBar";
 import ChatItem from "./ChatItem";
 import settingIcon from "../assets/settingsIcon.svg";
 
 function SideBar({ setSelectedChat }) {
-  const chats = ["Anjali Dabas", "Rachit Dabas", "Ankit Brother"];
-
+  const [chats, setChats] = useState([]);
   const [search, setSearch] = useState("");
+  const [showAddContact, setShowAddContact] = useState(false);
+  const [newContact, setNewContact] = useState("");
 
-  const filterChats = chats.filter((chat) =>
-    chat.toLowerCase().includes(search.toLowerCase()),
-  );
+  useEffect(() => {
+    fetchContacts();
+  }, []);
+
+  const fetchContacts = async () => {
+    try{
+      const response = await fetch("http://127.0.0.1:8000/contacts");
+      const data = await response.json();
+
+      const contactNames = data.map((contact) => contact.name);
+      setChats(contactNames);
+    } catch(error) {
+      console.log("Error fetching contacts:", error);
+    }
+  };
 
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
   };
+
+  const handleAddContact = async () => {
+    if (newContact.trim() === "") return;
+
+    try {
+      const response = await fetch("http://127.0.0.1:8000/contacts", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ name: newContact }),
+      });
+      const data = await response.json();
+
+      if (data.successful) {
+        setChats((prevChats) => [...prevChats, data.contact.name]);
+        setNewContact("");
+        setShowAddContact(false);
+      } else {
+        alert(data.message);
+      }
+    } catch (error) {
+      console.log("Error adding contact:", error);
+    }
+  };
+
+  const filterChats = chats.filter((chat) =>
+    chat.toLowerCase().includes(search.toLowerCase()),
+  );
 
   return (
     <div className="sidebar">
@@ -27,6 +69,28 @@ function SideBar({ setSelectedChat }) {
       </div>
 
       <SearchBar search={search} handleSearchChange={handleSearchChange} />
+
+      <button
+        className="add-contact-btn"
+        onClick={() => setShowAddContact(!showAddContact)}
+      >
+        Add Contact
+      </button>
+
+      {showAddContact && (
+        <div className="add-contact-box">
+          <input
+            type="text"
+            placeholder="Enter Contact Name"
+            className="add-contact-input"
+            value={newContact}
+            onChange={(e) => setNewContact(e.target.value)}
+          />
+          <button className="save-contact-btn" onClick={handleAddContact}>
+            Save
+          </button>
+        </div>
+      )}
 
       {filterChats.map((chat, index) => (
         <ChatItem

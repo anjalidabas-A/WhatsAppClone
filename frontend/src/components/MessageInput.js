@@ -1,13 +1,45 @@
 import { useState } from "react";
 
-function MessageInput({ messages, setMessages }) {
+function MessageInput({ selectedChat, setMessages }) {
   const [input, setInput] = useState("");
 
-  const sendMessage = () => {
+  const sendMessage = async () => {
     if (input.trim() === "") return;
-    setMessages((prev) => [...prev, { text: input, type: "sent" }]);
-    setInput("");
+    
+    if(!selectedChat) {
+      alert("Please select a chat first");
+      return;
+    }
+    
+    try {
+      const response = await fetch("http://127.0.0.1:8000/message", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          chat_name: selectedChat,
+          text: input,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.successful) {
+        setInput("");
+        const updatedResponse = await fetch(`http://127.0.0.1:8000/messages/${selectedChat}`);
+
+        const updatedData = await updatedResponse.json();
+
+        if (updatedData.successful){
+          setMessages(updatedData.messages);
+        }        
+      }
+    } catch (error) {
+      console.log("Error", error);
+    }
   };
+
   return (
     <div className="input-area">
       <input
