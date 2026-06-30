@@ -1,5 +1,7 @@
-function Message({ text, type }) {
-  return <div className={`message ${type}`}>{text}</div>;
+function Message({ text, senderId, currentUserId }) {
+  const messageType = senderId === currentUserId ? "sent" : "received";
+
+  return <div className={`message ${messageType}`}>{text}</div>;
 }
 
 export default Message;

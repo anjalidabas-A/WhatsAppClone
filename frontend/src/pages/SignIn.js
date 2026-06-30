@@ -3,30 +3,34 @@ import styles from "./SignIn.module.css";
 import { useState } from "react";
 
 function SignIn() {
-  const [number, setNumber] = useState("");
-
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
 
   const checkNum = async () => {
-    const response = await fetch("http://127.0.0.1:8000/signin", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({
-        number: number,
-      }),
-    });
+    try {
+      const response = await fetch("http://127.0.0.1:8000/signin", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          phone_number: phoneNumber,
+        }),
+      });
 
-    const data = await response.json();
+      const data = await response.json();
 
-    if (data.successful) {
-      navigate("/");
-    } else {
-      setError("Invalid Mobile Number");
-      setNumber("");
+      if (data.successful) {
+        localStorage.setItem("currentUser", JSON.stringify(data.user));
+        navigate("/");
+      } else {
+        setError("Invalid Mobile Number");
+        setPhoneNumber("");
+      }
+    } catch (error) {
+      console.log(error);
     }
   };
 
@@ -42,9 +46,9 @@ function SignIn() {
           type="tel"
           placeholder="Enter Your Mobile Number"
           className={styles.signInInput}
-          value={number}
+          value={phoneNumber}
           onChange={(e) => {
-            setNumber(e.target.value);
+            setPhoneNumber(e.target.value);
             setError("");
           }}
         />

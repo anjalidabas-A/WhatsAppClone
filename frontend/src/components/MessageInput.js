@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-function MessageInput({ selectedChat, setMessages }) {
+function MessageInput({ currentUser, fetchMessages, selectedChat }) {
   const [input, setInput] = useState("");
 
   const sendMessage = async () => {
@@ -18,7 +18,8 @@ function MessageInput({ selectedChat, setMessages }) {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          chat_name: selectedChat,
+          sender_id: currentUser.id,
+          receiver_id: selectedChat.id,
           text: input,
         }),
       });
@@ -27,16 +28,10 @@ function MessageInput({ selectedChat, setMessages }) {
 
       if (data.successful) {
         setInput("");
-        const updatedResponse = await fetch(`http://127.0.0.1:8000/messages/${selectedChat}`);
-
-        const updatedData = await updatedResponse.json();
-
-        if (updatedData.successful){
-          setMessages(updatedData.messages);
-        }        
+        fetchMessages();  
       }
     } catch (error) {
-      console.log("Error", error);
+      console.log("Error sending message:", error);
     }
   };
 

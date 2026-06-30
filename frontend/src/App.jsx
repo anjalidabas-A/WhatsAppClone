@@ -1,6 +1,6 @@
 import React from "react";
 import { Routes, Route } from "react-router-dom";
-import { useState , useEffect } from "react";
+import { useState, useEffect } from "react";
 import "./App.css";
 import Settings from "./pages/Settings";
 import SideBar from "./components/SideBar";
@@ -11,33 +11,44 @@ import SignIn from "./pages/SignIn";
 import Help from "./pages/Help";
 
 function App() {
-  const [messages, setMessages] = useState([]);
+  const [currentUser, setCurrentUser] = useState(null);
 
   const [selectedChat, setSelectedChat] = useState("");
 
-  useEffect(()=> {
-    if(!selectedChat) {
+  const [messages, setMessages] = useState([]);
+
+  useEffect(() => {
+    const user = JSON.parse(localStorage.getItem("currentUser"));
+    if (user) {
+      setCurrentUser(user);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (!currentUser || !selectedChat) {
       setMessages([]);
       return;
     }
-
-    const fetchMessages = async() => {
-      try {
-        const response = await fetch(`http://127.0.0.1:8000/messages/${selectedChat}`);
-        
-        const data = await response.json();
-
-        if (data.successful) {
-          setMessages(data.messages);
-        } else {
-          setMessages([]);
-        }
-      } catch (error) {
-        console.log("Error fetching messages:", error);
-      }
-    };
     fetchMessages();
-  }, [selectedChat]);
+  }, [selectedChat, currentUser]);
+
+  const fetchMessages = async () => {
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8000/messages/${currentUser.id}/${selectedChat.id}`,
+      );
+
+      const data = await response.json();
+
+      if (data.successful) {
+        setMessages(data.messages);
+      } else {
+        setMessages([]);
+      }
+    } catch (error) {
+      console.log("Error fetching messages:", error);
+    }
+  };
 
   return (
     <Routes>
@@ -45,18 +56,32 @@ function App() {
         path="/"
         element={
           <div className="app">
-            <SideBar setSelectedChat={setSelectedChat} />
+            <SideBar
+              currentUser={currentUser}
+              selectedChat={selectedChat}
+              setSelectedChat={setSelectedChat}
+            />
 
             <div className="chat-section">
               <ChatHeader selectedChat={selectedChat} />
 
               <div className="messages">
-                {messages.map((msg, index) => (
-                  <Message key={msg.id || index} text={msg.text} type={msg.message_type} />
+                {messages.map((msg) => (
+                  <Message
+                    key={msg.id}
+                    text={msg.text}
+                    SenderId={msg.sender_id}
+                    currentUserId={currentUser?.id}
+                  />
                 ))}
               </div>
 
-              <MessageInput selectedChat={selectedChat} setMessages={setMessages} />
+              <MessageInput
+                currentUser={currentUser}
+                selectedChat={selectedChat}
+                setMessages={setMessages}
+                fetchMessages={fetchMessages}
+              />
             </div>
           </div>
         }

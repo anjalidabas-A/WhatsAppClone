@@ -4,34 +4,39 @@ import SearchBar from "./SearchBar";
 import ChatItem from "./ChatItem";
 import settingIcon from "../assets/settingsIcon.svg";
 
-function SideBar({ setSelectedChat }) {
-  const [chats, setChats] = useState([]);
+function SideBar({ currentUser, selectedChat, setSelectedChat }) {
+  const [contacts, setContacts] = useState([]);
   const [search, setSearch] = useState("");
   const [showAddContact, setShowAddContact] = useState(false);
-  const [newContact, setNewContact] = useState("");
-
-  useEffect(() => {
-    fetchContacts();
-  }, []);
+  const [contactName, setContactName] = useState("");
+  const [contactNumber, setContactNumber] = useState("");
 
   const fetchContacts = async () => {
-    try{
-      const response = await fetch("http://127.0.0.1:8000/contacts");
+    try {
+      const response = await fetch(
+        `http://127.0.0.1:8000/contacts/${currentUser.id}`,
+      );
       const data = await response.json();
-
-      const contactNames = data.map((contact) => contact.name);
-      setChats(contactNames);
-    } catch(error) {
+      if (data.successful) {
+        setContacts(data.contacts);
+      }
+    } catch (error) {
       console.log("Error fetching contacts:", error);
     }
   };
+
+  useEffect(() => {
+    if (currentUser) {
+      fetchContacts();
+    }
+  }, [currentUser]);
 
   const handleSearchChange = (e) => {
     setSearch(e.target.value);
   };
 
   const handleAddContact = async () => {
-    if (newContact.trim() === "") return;
+    if (!contactName || !contactNumber) return;
 
     try {
       const response = await fetch("http://127.0.0.1:8000/contacts", {
@@ -39,13 +44,18 @@ function SideBar({ setSelectedChat }) {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ name: newContact }),
+        body: JSON.stringify({
+          owner_id: currentUser.id,
+          contact_name: contactName,
+          contact_number: contactNumber,
+        }),
       });
       const data = await response.json();
 
       if (data.successful) {
-        setChats((prevChats) => [...prevChats, data.contact.name]);
-        setNewContact("");
+        fetchContacts();
+        setContactName("");
+        setContactNumber("");
         setShowAddContact(false);
       } else {
         alert(data.message);
@@ -55,8 +65,8 @@ function SideBar({ setSelectedChat }) {
     }
   };
 
-  const filterChats = chats.filter((chat) =>
-    chat.toLowerCase().includes(search.toLowerCase()),
+  const filterContacts = contacts.filter((contact) =>
+    contact.contact_name.toLowerCase().includes(search.toLowerCase()),
   );
 
   return (
@@ -69,6 +79,11 @@ function SideBar({ setSelectedChat }) {
       </div>
 
       <SearchBar search={search} handleSearchChange={handleSearchChange} />
+
+      <div className="current-user">
+        <h3>{currentUser?.name}</h3>
+        <p>{currentUser?.phone_number}</p>
+      </div>
 
       <button
         className="add-contact-btn"
@@ -83,8 +98,15 @@ function SideBar({ setSelectedChat }) {
             type="text"
             placeholder="Enter Contact Name"
             className="add-contact-input"
-            value={newContact}
-            onChange={(e) => setNewContact(e.target.value)}
+            value={contactName}
+            onChange={(e) => setContactName(e.target.value)}
+          />
+          <input
+            type="text"
+            placeholder="Phone Number"
+            className="add-contact-btn"
+            value={contactNumber}
+            onChange={(e) => setContactNumber(e.target.value)}
           />
           <button className="save-contact-btn" onClick={handleAddContact}>
             Save
@@ -92,11 +114,19 @@ function SideBar({ setSelectedChat }) {
         </div>
       )}
 
-      {filterChats.map((chat, index) => (
+      {filterContacts.map((contact) => (
         <ChatItem
-          key={index}
-          name={chat}
-          onClick={() => setSelectedChat(chat)}
+          key={contact.id}
+          name={contact.contact_name}
+          number={contact.contact_number}
+          selected={selectedChat?.id === contact.id}
+          onClick={() =>
+            setSelectedChat({
+              id: contact.id,
+              name: contact.contact_name,
+              phone_number: contact.contact_number,
+            })
+          }
         />
       ))}
     </div>
