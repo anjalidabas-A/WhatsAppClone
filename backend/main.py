@@ -1,9 +1,12 @@
-from fastapi import FastAPI, Depends
+from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from sqlalchemy.orm import Session
-from database import engine, get_db, SessionLocal
-from models import Base, User, Message, Contact
-from schemas import UserLogin, MessageCreate, ContactCreate
+from database import engine, SessionLocal
+from models import Base, User
+ 
+from routes.contacts import router as contacts_router
+from routes.chats import router as chats_router
+from routes.messages import router as messages_router
+from routes.auth import router as auth_router
 
 app = FastAPI()
 
@@ -17,16 +20,24 @@ app.add_middleware(
 
 Base.metadata.create_all(bind=engine)
 
+# user ---------------------------------
 def add_users():
   db = SessionLocal()
   try:
-    user1 = db.query(User).filter(User.number == "9876").first()
-    user2 = db.query(User).filter(User.number == "1234").first()
+    users = [
+      {"name": "Anjali Dabas", "phone_number": "9876"},
+      {"name": "Rachit Dabas", "phone_number": "1234"},
+    ]
 
-    if not user1:
-      db.add(User(number="9876"))
-    if not user2:
-      db.add(User(number="1234"))
+    for user in users:
+      already_exists = db.query(User).filter(User.phone_number == user["phone_number"]).first()
+
+      if not already_exists:
+        new_user = User(
+          name=user["name"],
+          phone_number=user["phone_number"]
+        )
+        db.add(new_user)
   
     db.commit()
   finally:
@@ -38,103 +49,14 @@ add_users()
 def home():
   return {"message": "Backend is running"}
 
-@app.post("/signin")
-def signin(user: UserLogin, db: Session = Depends(get_db)):
+# sigin ---------------------------------
+app.include_router(auth_router)
 
-  db_user = db.query(User).filter(User.number == user.number).first()
+# contacts---------------------------------------
+app.include_router(contacts_router)
 
-  if db_user:
-    return {
-      "successful": True,
-      "message": "Valid User"
-    }
-  return{
-      "successful": False,
-      "message": "InValid User"
-  }
+# chats --------------------------------------
+app.include_router(chats_router)
 
-@app.post("/message")
-def save_message(message: MessageCreate, db: Session = Depends(get_db)):
-
-  new_message = Message(
-    chat_name=message.chat_name,
-    text=message.text,
-    message_type="sent",
-  )
-
-  db.add(new_message)
-  db.commit()
-
-  received_message = Message(
-    chat_name=message.chat_name,
-    text="OKAY",
-    message_type="received",
-  )
-
-  db.add(received_message)
-  db.commit()
-
-  return{
-    "successful": True,
-    "message": "Message Saved",
-  }
-
-@app.get("/messages/{chat_name}")
-def get_messages(chat_name: str, db: Session = Depends(get_db)):
-
-  all_messages = db.query(Message).filter(Message.chat_name == chat_name).all()
-
-  result = []
-
-  for msg in all_messages:
-    result.append({
-      "id": msg.id,
-      "chat_name": msg.chat_name,
-      "text": msg.text,
-      "message_type": msg.message_type,
-    })
-
-  return{
-    "successful": True,
-    "messages": result
-  }
-
-@app.get("/contacts")
-def get_contacts(db: Session = Depends(get_db)):
-
-  contacts = db.query(Contact).all()
-
-  result = []
-  for contact in contacts:
-    result.append({
-      "id": contact.id,
-      "name": contact.name
-    })
-  return result
-
-@app.post("/contacts")
-def add_contact(contact: ContactCreate, db: Session = Depends(get_db)):
-
-  already_contact = db.query(Contact).filter(Contact.name == contact.name).first()
-
-  if already_contact:
-    return{
-      "successful": False,
-      "message": "Contact already exists"
-    }
-
-  new_contact = Contact(name=contact.name)
-
-  db.add(new_contact)
-  db.commit()
-  db.refresh(new_contact)
-
-  result = {
-    "successful": True,
-    "message": "Contact added successfully",
-    "contact":{
-      "id": new_contact.id,
-      "name": new_contact.name,
-    }
-  }
-  return result
+# messages ---------------------------------------
+app.include_router(messages_router)

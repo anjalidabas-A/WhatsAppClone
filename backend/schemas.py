@@ -1,12 +1,21 @@
 from pydantic import BaseModel
 
 class UserLogin(BaseModel):
-  number: str
-
-class MessageCreate(BaseModel):
-  chat_name: str
-  text: str
+  phone_number: str
 
 class ContactCreate(BaseModel):
-  name: str
+  owner_id: int
+  contact_name: str
+  contact_number: str
+
+class ChatCreate(BaseModel):
+  user1 : int
+  user2 : int
+
+class MessageCreate(BaseModel):
+  chat_id: int
+  sender_id: int
+  text: str
+
+
 
