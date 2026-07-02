@@ -12,5 +12,3 @@ function ChatItem({ name, number, selected, onClick }) {
 }
 
 export default ChatItem;
-
-// {name ? name[0].toUpperCase() : "?")}

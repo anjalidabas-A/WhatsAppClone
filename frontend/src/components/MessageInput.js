@@ -1,25 +1,25 @@
 import { useState } from "react";
 
-function MessageInput({ currentUser, fetchMessages, selectedChat }) {
+function MessageInput({ currentUser, fetchMessages, chatId }) {
   const [input, setInput] = useState("");
 
   const sendMessage = async () => {
     if (input.trim() === "") return;
     
-    if(!selectedChat) {
+    if(!chatId) {
       alert("Please select a chat first");
       return;
     }
     
     try {
-      const response = await fetch("http://127.0.0.1:8000/message", {
+      const response = await fetch("http://127.0.0.1:8000/messages", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          chat_id: chatId,
           sender_id: currentUser.id,
-          receiver_id: selectedChat.id,
           text: input,
         }),
       });
