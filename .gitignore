@@ -6,6 +6,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+backend/routes/__pycache__/
 # Virtual environments
 venv/
 .venv/

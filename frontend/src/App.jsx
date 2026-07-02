@@ -12,11 +12,11 @@ import Help from "./pages/Help";
 
 function App() {
   const [currentUser, setCurrentUser] = useState(null);
-
-  const [selectedChat, setSelectedChat] = useState("");
-
+  const [selectedChat, setSelectedChat] = useState(null);
+  const [chatId, setChatId] = useState(null);
   const [messages, setMessages] = useState([]);
 
+  
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("currentUser"));
     if (user) {
@@ -25,17 +25,17 @@ function App() {
   }, []);
 
   useEffect(() => {
-    if (!currentUser || !selectedChat) {
+    if (!currentUser || !chatId) {
       setMessages([]);
       return;
     }
     fetchMessages();
-  }, [selectedChat, currentUser]);
+  }, [currentUser, chatId]);
 
   const fetchMessages = async () => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/messages/${currentUser.id}/${selectedChat.id}`,
+        `http://127.0.0.1:8000/messages/${chatId}`,
       );
 
       const data = await response.json();
@@ -60,6 +60,7 @@ function App() {
               currentUser={currentUser}
               selectedChat={selectedChat}
               setSelectedChat={setSelectedChat}
+              setChatId={setChatId}
             />
 
             <div className="chat-section">
@@ -70,7 +71,7 @@ function App() {
                   <Message
                     key={msg.id}
                     text={msg.text}
-                    SenderId={msg.sender_id}
+                    senderId={msg.sender_id}
                     currentUserId={currentUser?.id}
                   />
                 ))}
@@ -78,7 +79,7 @@ function App() {
 
               <MessageInput
                 currentUser={currentUser}
-                selectedChat={selectedChat}
+                chatId={chatId}
                 setMessages={setMessages}
                 fetchMessages={fetchMessages}
               />

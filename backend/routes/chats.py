@@ -11,6 +11,18 @@ router = APIRouter(
 
 @router.post("")
 def create_chat(chat: ChatCreate, db: Session = Depends(get_db)):
+
+  existing_chat = db.query(Chat).filter(
+    ((Chat.user1 == chat.user1)&(Chat.user2 == chat.user2))| 
+    ((Chat.user1 == chat.user2)&(Chat.user2 == chat.user1))
+    ).first()
+  
+  if existing_chat:
+    return{
+      "successful": True,
+      "message": "Chat already exists",
+      "chat_id": existing_chat.id
+    }
   
   new_chat = Chat(
     user1=chat.user1,
@@ -22,5 +34,6 @@ def create_chat(chat: ChatCreate, db: Session = Depends(get_db)):
 
   return{
     "successful": True,
-    "message": "Chat created successfully"
+    "message": "Chat created successfully",
+    "chat_id": new_chat.id
   }
