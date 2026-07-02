@@ -27,7 +27,7 @@ function SideBar({ currentUser, selectedChat, setSelectedChat, setChatId }) {
     if (currentUser) {
       fetchContacts();
     }
-  }, [currentUser, fetchContacts]);
+  }, [currentUser]);
 
   const handleSearchChange = (e) => {
     setSearch(e.target.value);

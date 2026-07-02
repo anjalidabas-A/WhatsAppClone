@@ -34,5 +34,6 @@ def create_chat(chat: ChatCreate, db: Session = Depends(get_db)):
 
   return{
     "successful": True,
-    "message": "Chat created successfully"
+    "message": "Chat created successfully",
+    "chat_id": new_chat.id
   }
