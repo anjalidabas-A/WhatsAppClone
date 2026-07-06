@@ -7,12 +7,14 @@ class User(Base):
   id = Column(Integer, primary_key=True, index=True)
   name = Column(String, nullable=False)
   phone_number = Column(String, unique=True, index=True)
+  password = Column(String)
 
 class Contact(Base):
   __tablename__ = "contacts"
 
   id = Column(Integer, primary_key=True, index=True)
   owner_id = Column(Integer, ForeignKey("users.id"))
+  contact_user_id = Column(Integer, ForeignKey("users.id"))
   contact_name = Column(String, nullable=False)
   contact_number = Column(String, nullable=False)
 

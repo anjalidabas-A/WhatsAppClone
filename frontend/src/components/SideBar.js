@@ -46,14 +46,14 @@ function SideBar({ currentUser, selectedChat, setSelectedChat, setChatId }) {
         },
         body: JSON.stringify({
           user1: currentUser.id,
-          user2: contact.id,
+          user2: contact.contact_user_id,
         }),
       });
 
       const chat = await response.json();
 
       setSelectedChat({
-        id: contact.id,
+        id: contact.contact_user_id,
         name: contact.contact_name,
         phone_number: contact.contact_number,
       });

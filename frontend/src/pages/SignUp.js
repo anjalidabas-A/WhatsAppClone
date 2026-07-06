@@ -1,25 +1,27 @@
-import { useNavigate } from "react-router-dom";
-import styles from "./SignIn.module.css";
 import { useState } from "react";
+import { Link, useNavigate } from "react-router-dom";
+import styles from "./SignIn.module.css";
 
-function SignIn() {
+function SignUp() {
+  const [name, setName] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
 
   const navigate = useNavigate();
 
-  const checkNum = async () => {
-    try {
-      const response = await fetch("http://127.0.0.1:8000/signin", {
+  const createAccount = async () => {
+    try{
+      const response = await fetch("http://127.0.0.1:8000/signup", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          name: name,
           phone_number: phoneNumber,
           password: password,
-        }),
+        }), 
       });
 
       const data = await response.json();
@@ -27,27 +29,37 @@ function SignIn() {
       if (data.successful) {
         localStorage.setItem("currentUser", JSON.stringify(data.user));
         navigate("/");
+        alert(data.message)
       } else {
         setError(data.message);
-        setPhoneNumber("");
-        setPassword("");
       }
-    } catch (error) {
-      console.log(error);
-    }
-  };
 
+    } catch (error) {
+    console.log(error);
+  } 
+  };
   return (
     <div className={styles.signInContainer}>
       <div className={styles.signInCard}>
         <h1>Welcome to VibeChat</h1>
-        <p>Sign in to Open the App</p>
+        <p>Create your VibeChat Account</p>
 
         {error && <p className={styles.error}>{error}</p>}
 
-        <input
-          type="tel"
-          placeholder="Enter Your Mobile Number"
+        <input 
+          type="text" 
+          placeholder="Enter your name here"
+          className={styles.signInInput}
+          value={name}
+          onChange={(e) => {
+            setName(e.target.value);
+            setError("");
+          }}
+        />
+
+        <input 
+          type="tel" 
+          placeholder="Enter your Mobile Number here"
           className={styles.signInInput}
           value={phoneNumber}
           onChange={(e) => {
@@ -57,26 +69,26 @@ function SignIn() {
         />
 
         <input 
-          type="password"
-          placeholder="Enter Your Password"
+          type="password" 
+          placeholder="Set Your Password"
+          className={styles.signInInput}
           value={password}
           onChange={(e) => {
-            setPassword(e.target.value); 
+            setPassword(e.target.value);
             setError("");
           }}
         />
 
-        <button className={styles.signInBtn} onClick={checkNum}>
-          Sign In
+        <button className={styles.signInBtn} onClick={createAccount}>
+           Submit
         </button>
 
-        <button className={styles.signInBtn} onClick={() => navigate("/signup")}>
-          Create Account
-        </button>
+        <Link to="/signin">Already have an Account?</Link>
 
       </div>
+
     </div>
-  );
+  )
 }
 
-export default SignIn;
+export default SignUp;
