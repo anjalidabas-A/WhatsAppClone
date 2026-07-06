@@ -2,6 +2,12 @@ from pydantic import BaseModel
 
 class UserLogin(BaseModel):
   phone_number: str
+  password: str
+
+class UserCreate(BaseModel):
+  name: str
+  phone_number: str
+  password: str
 
 class ContactCreate(BaseModel):
   owner_id: int

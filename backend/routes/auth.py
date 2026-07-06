@@ -14,17 +14,24 @@ def signin(user: UserLogin, db: Session = Depends(get_db)):
 
   db_user = db.query(User).filter(User.phone_number == user.phone_number).first()
 
-  if db_user:
-    return {
-      "successful": True,
-      "message": "Valid User",
-      "user": {
-        "id": db_user.id,
-        "name": db_user.name,
-        "phone_number": db_user.phone_number,
-      }
-    }
-  return{
+  if not db_user:
+    return{
     "successful": False,
     "message": "InValid User"
+    }
+  
+  if db_user.password != user.password:
+    return{
+      "successful": False,
+      "message": "Incorrect Password"
+    }
+
+  return {
+    "successful": True,
+    "message": "Valid User",
+    "user": {
+      "id": db_user.id,
+      "name": db_user.name,
+      "phone_number": db_user.phone_number,
+    }
   }
