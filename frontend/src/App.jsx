@@ -17,6 +17,8 @@ function App() {
   const [chatId, setChatId] = useState(null);
   const [messages, setMessages] = useState([]);
 
+  const [selectionMode, setSelectionMode] = useState(false);
+  const [selectedMessages, setSelectedMessages] = useState([]);
   
   useEffect(() => {
     const user = JSON.parse(localStorage.getItem("currentUser"));
@@ -36,7 +38,7 @@ function App() {
   const fetchMessages = async () => {
     try {
       const response = await fetch(
-        `http://127.0.0.1:8000/messages/${chatId}`,
+        `http://127.0.0.1:8000/messages/${chatId}?user_id=${currentUser.id}`,
       );
 
       const data = await response.json();
@@ -48,6 +50,25 @@ function App() {
       }
     } catch (error) {
       console.log("Error fetching messages:", error);
+    }
+  };
+
+  const deleteSelectedMessages = async () => {
+    try{
+      for (const messageId of selectedMessages) {
+        await fetch(`http://127.0.0.1:8000/messages/${messageId}?user_id=${currentUser.id}`,
+          {
+            method: "DELETE",
+          }
+        );
+      }
+      await fetchMessages();
+
+      setSelectedMessages([]);
+      setSelectionMode(false);
+      
+    }catch (error) {
+      console.log(error);
     }
   };
 
@@ -65,15 +86,26 @@ function App() {
             />
 
             <div className="chat-section">
-              <ChatHeader selectedChat={selectedChat} />
+              <ChatHeader 
+                selectedChat={selectedChat}
+                selectionMode={selectionMode}
+                selectedCount={selectedMessages.length}
+                setSelectionMode={setSelectionMode}
+                setSelectedMessages={setSelectedMessages} 
+                deleteSelectedMessages={deleteSelectedMessages}
+              />
 
               <div className="messages">
                 {messages.map((msg) => (
                   <Message
                     key={msg.id}
+                    id={msg.id}
                     text={msg.text}
                     senderId={msg.sender_id}
                     currentUserId={currentUser?.id}
+                    selectionMode={selectionMode}
+                    selectedMessages={selectedMessages}
+                    setSelectedMessages={setSelectedMessages}
                   />
                 ))}
               </div>
@@ -89,9 +121,16 @@ function App() {
         }
       />
 
-      <Route path="/settings" element={<Settings />} />
+      <Route path="/settings" element={
+        <Settings 
+          setCurrentUser={setCurrentUser}
+          setSelectedChat={setSelectedChat}
+          setChatId={setChatId}
+          setMessages={setMessages}
+        />} />
+      
       <Route path="/help" element={<Help />} />
-      <Route path="/signin" element={<SignIn />} />
+      <Route path="/signin" element={<SignIn setCurrentUser={setCurrentUser}/>} />
       <Route path="/signup" element={<SignUp />} />
     </Routes>
   );

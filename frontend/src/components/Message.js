@@ -1,7 +1,36 @@
-function Message({ text, senderId, currentUserId }) {
+function Message({
+  id,
+  text,
+  senderId,
+  currentUserId,
+  selectionMode,
+  selectedMessages,
+  setSelectedMessages,
+}) {
   const messageType = senderId === currentUserId ? "sent" : "received";
 
-  return <div className={`message ${messageType}`}>{text}</div>;
+  const isSelected = selectedMessages.includes(id);
+
+  const handleClick = () => {
+    if (!selectionMode) return;
+
+    if (isSelected) {
+      setSelectedMessages(
+        selectedMessages.filter((messageId) => messageId !== id),
+      );
+    } else {
+      setSelectedMessages([...selectedMessages, id]);
+    }
+  };
+
+  return (
+  <div
+    className={`message ${messageType} ${isSelected ? "selected" : ""}`}
+    onClick={handleClick}
+  >
+    {text}
+  </div>
+  );
 }
 
 export default Message;

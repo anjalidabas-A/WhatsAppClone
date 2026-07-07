@@ -86,7 +86,7 @@ function SideBar({ currentUser, selectedChat, setSelectedChat, setChatId }) {
           key={contact.id}
           name={contact.contact_name}
           number={contact.contact_number}
-          selected={selectedChat?.id === contact.id}
+          selected={selectedChat?.id === contact.contact_user_id}
           onClick={() => openChat(contact)}
         />
       ))}
