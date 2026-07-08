@@ -2,9 +2,19 @@ import style from "./Settings.module.css";
 import { Link , useNavigate } from "react-router-dom";
 import { useState } from "react";
 
-function Settings() {
+function Settings( {setCurrentUser, setSelectedChat, setChatId, setMessages} ) {
   const [showLogout, setShowLogout] = useState(false);
   const navigate = useNavigate();
+
+  const  logout = () => {
+  localStorage.removeItem("currentUser")
+  setCurrentUser(null);
+  setSelectedChat(null);
+  setChatId(null);
+  setMessages([]);
+  navigate("/signin")
+}
+   
   return (
     <div className={style.settings}>
       <div className={style.settingsHeader}>
@@ -46,7 +56,7 @@ function Settings() {
             >
               Cancel
             </button>
-            <button className={style.logoutButton} onClick={() => {navigate("/signin")}}>
+            <button className={style.logoutButton} onClick={() => {logout()}}>
             Logout
             </button>
 

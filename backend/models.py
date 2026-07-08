@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String, ForeignKey, Boolean
 from database import Base
 
 class User(Base):
@@ -32,4 +32,7 @@ class Message(Base):
   chat_id = Column(Integer, ForeignKey("chats.id"))
   sender_id = Column(Integer, ForeignKey("users.id"))
   text = Column(String, nullable=False)
+  deleted_by_sender = Column(Boolean, default=False)
+  deleted_by_receiver = Column(Boolean, default=False)
+
 

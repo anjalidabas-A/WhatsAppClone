@@ -2,7 +2,7 @@ import { useNavigate } from "react-router-dom";
 import styles from "./SignIn.module.css";
 import { useState } from "react";
 
-function SignIn() {
+function SignIn( {setCurrentUser} ) {
   const [phoneNumber, setPhoneNumber] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
@@ -25,6 +25,7 @@ function SignIn() {
       const data = await response.json();
 
       if (data.successful) {
+        setCurrentUser(data.user)
         localStorage.setItem("currentUser", JSON.stringify(data.user));
         navigate("/");
       } else {
